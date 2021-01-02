@@ -12,12 +12,22 @@ function App() {
   const [filteredItems, setFilteredItems] = useState([]);
 
   useEffect(() => {
-      getLocalItems();
-  }, [])
+    getLocalItems();
+  }, []);
 
   useEffect(() => {
-    filterHandler();
-    saveItemsToLocal();
+    switch (status) {
+      case "Added to Cart":
+        setFilteredItems(itemsList.filter((item) => item.inCart === true));
+        break;
+      case "Missing":
+        setFilteredItems(itemsList.filter((item) => item.inCart === false));
+        break;
+      default:
+        setFilteredItems(itemsList);
+        break;
+    }
+    localStorage.setItem("itemsList", JSON.stringify(itemsList));
   }, [itemsList, status]);
 
   const handleInputs = (e) => {
@@ -35,24 +45,6 @@ function App() {
 
   const statusHandler = (e) => {
     setStatus(e.target.value);
-  };
-
-  const filterHandler = () => {
-    switch (status) {
-      case "Added to Cart":
-        setFilteredItems(itemsList.filter((item) => item.inCart === true));
-        break;
-      case "Missing":
-        setFilteredItems(itemsList.filter((item) => item.inCart === false));
-        break;
-      default:
-        setFilteredItems(itemsList);
-        break;
-    }
-  };
-
-  const saveItemsToLocal = () => {
-    localStorage.setItem("itemsList", JSON.stringify(itemsList));
   };
 
   const getLocalItems = () => {
